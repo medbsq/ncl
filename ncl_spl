@@ -31,7 +31,7 @@ fi
 echo "step 2 : scan"
 #lanch the scan 
 for file in $(ls host_* );do
-	nuclei -l $file  -t ./ncl_temp -c 500   -stats -timeout 5  -severity $4 | anew nuclie_split |notify
+	nuclei -l $file  -t ./ncl_temp -c 500   -stats -timeout 5  -severity $4  -silent| anew nuclie_split |notify -silent
 	rm -rf $file
 done
 
