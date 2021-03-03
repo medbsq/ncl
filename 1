@@ -16,7 +16,7 @@ rm -rf ./ncl_temp 2&> /dev/null
 cp -r $3 ./ncl_temp
 cd  ./ncl_temp
 
-if [[ -f ../.templates ]]; then
+if [[ -f ./.templates ]]; then
 	for i in $(cat ../.templates);do
 		find ./ -iname "$i" -exec rm -rf {} \;
 	done
