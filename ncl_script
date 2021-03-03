@@ -92,7 +92,7 @@ else
 	split_host $urls  $line_nbr
 	scan $occurence $severity $output
 	update_template_file
-done
+fi
 
 
 
