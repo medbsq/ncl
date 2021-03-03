@@ -16,16 +16,13 @@ function prepare_template(){
 
 function split_host(){
 	cd $path
-	# create  split for  scan file if  doesn t exist
 	if [[ ! $(find ./ -iname "host_*") ]]; then
 		split -l $2 $1  host_
 	fi
 }
 
 function scan(){
-	cd $path
-	echo "step 2 : scan"
-	#lanch the scan 
+	cd $path 
 	for file in $(ls host_* );do
 		nuclei -l $file  -t ./ncl_temp -c $2   -stats -timeout 5  -severity $1  -silent| anew $3 |notify -silent
 		rm -rf $file
@@ -33,61 +30,70 @@ function scan(){
 }
 
 function update_template_file(){
-	echo "step3 : update .template file"
-	#get the templates that is used 
 	cd ./ncl_temp && find ./ -iname "*.yaml"  |grep -r  "$4" |cut -d ":" -f 1 | rev | cut -d'/' -f1 | rev   >> ../.templates && cd -
 	cat .templates |sort -uo .templates
 	rm -rf ./ncl_temp 
 }
 
-path=pwd
+function help(){
+	echo "usage:"
+	echo "exp : ncl_script -l urls.txt -t ~/nuclei-templates -s high -o out_put.txt -c 500  -n 100"
+	echo -e "\t l \t  url or file (require)"
+	echo -e "\t t \t  directory templates (require)"
+	echo -e "\t s \t severity  (default all : critical,high,medium,low)"
+	echo -e "\t o \t output file (default nuclei_split)"
+	echo -e "\t c \t nbr of occurences (default 100) "
+	echo -e "\t n \t nbr of split line (default 500)"
+}
+path=$PWD
 urls=""
-severity=""
-templates="critical,high,medium,low"
+severity="critical,high,medium,low"
+templates=""
 output="nuclie_split"
 line_nbr=500
 occurence=100
 
 while getopts ":l:s:o:t:n:c:" OPTION
-
 	do
-			case $OPTION in
-					l)
-							urls="$OPTARG" 
-							;;
-					s)
-							severity="$OPTARG"
-							;;
-					t)
-							templates="$OPTARG"
-							;;
-					o)
-							output="$OPTARG"
-							;;
-					n)
-							line_nbr="$OPTARG"
-							;;
-					c)
-							occurence="$OPTARG"
-							;;
+		case $OPTION in
+			l)
+					urls="$OPTARG" 
+					;;
+			s)
+					severity="$OPTARG"
+					;;
+			t)
+					templates="$OPTARG"
+					;;
+			o)
+					output="$OPTARG"
+					;;
+			n)
+					line_nbr="$OPTARG"
+					;;
+			c)
+					occurence="$OPTARG"
+					;;
 
-					:)
-							help
-							exit 1
-							;;
-					\?)
-							help
-							exit 1
-							;;
+			:)
+					help
+					exit 1
+					;;
+			\?)
+					help
+					exit 1
+					;;
 
-			esac
+		esac
 	done
 
 
 
-if [[ $template == "" || $urls == "" ]];then
+if [[ $templates == "" || $urls == "" ]];then
+	echo "the template directory and the urls list are required !!!"
 	exit ;
 else 
+	echo " $templates  $urls  $line_nbr  $occurence $severity $output "
 	prepare_template $template
 	split_host $urls  $line_nbr
 	scan $occurence $severity $output
