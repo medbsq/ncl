@@ -45,6 +45,7 @@ function help(){
 	echo -e "\t c \t nbr of occurences (default 100) "
 	echo -e "\t n \t nbr of split line (default 500)"
 }
+
 path=$PWD
 urls=""
 severity="critical,high,medium,low"
@@ -93,11 +94,12 @@ if [[ $templates == "" || $urls == "" ]];then
 	echo "the template directory and the urls list are required !!!"
 	exit ;
 else 
-	echo " $templates  $urls  $line_nbr  $occurence $severity $output "
+	# echo " $templates  $urls  $line_nbr  $occurence $severity $output "
 	prepare_template $template
 	split_host $urls  $line_nbr
 	scan $occurence $severity $output
 	update_template_file
+	echo "scan done "| notify -silent
 fi
 
 

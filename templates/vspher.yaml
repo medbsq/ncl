@@ -1,0 +1,22 @@
+id: CVE-2021-21972
+
+info:
+  name: vspher
+  author: medbsq
+  severity: high
+# https://www.cvebase.com/cve/2018/18264
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/ui/vropspluginui/rest/services/getstatus"
+    headers:
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "States"
+        part: body
+      - type: status
+        status:
+          - 200

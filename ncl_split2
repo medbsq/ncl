@@ -38,7 +38,7 @@ for file in $(ls host_* );do
 	nuclei -l $file  -t ./ncl_temp   -stats -timeout 5  -severity $4  -c $5| anew $2 |notify -silent
 	rm -rf $file
 done
-echo "scan done "| notify -silent 
+x 
 
 echo "step3 : update .template file"
 
