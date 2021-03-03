@@ -35,10 +35,10 @@ fi
 echo "step 2 : scan"
 #lanch the scan 
 for file in $(ls host_* );do
-	nuclei -l $file  -t ./ncl_temp   -stats -timeout 5  -severity $4  -c $5| tee -a $2
+	nuclei -l $file  -t ./ncl_temp   -stats -timeout 5  -severity $4  -c $5| anew $2 |notify -silent
 	rm -rf $file
 done
-echo "scan done "| notify
+echo "scan done "| notify -silent 
 
 echo "step3 : update .template file"
 
