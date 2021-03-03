@@ -4,10 +4,12 @@
 # url file to scan 
 #output file
 #nuclei template
-$sevirity
+#sevirity
+#occur
 
 # test if there is already scan done before in this repo 
 # to create a inore file  for this repos 
+
 
 echo "step prepare template"
 rm -rf ./ncl_temp 2&> /dev/null
@@ -28,13 +30,15 @@ if [[ ! $(find ./ -iname "host_*") ]]; then
 	split -l 500 $1  host_
 fi
 
+
+
 echo "step 2 : scan"
 #lanch the scan 
 for file in $(ls host_* );do
-	nuclei -l $file  -t ./ncl_temp   -stats -timeout 5  -severity $4 | tee -a $2
+	nuclei -l $file  -t ./ncl_temp   -stats -timeout 5  -severity $4  -c $5| tee -a $2
 	rm -rf $file
 done
-
+echo "scan done "| notify
 
 echo "step3 : update .template file"
 
