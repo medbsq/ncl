@@ -24,7 +24,7 @@ function split_host(){
 function scan(){
 	cd $path 
 	for file in $(ls host_* );do
-		nuclei -l $file  -t ./ncl_temp -c $2   -stats -timeout 5  -severity $1  -silent| anew $3 |notify -silent
+		nuclei -l $file  -t ./ncl_temp -c $1   -stats -timeout 5  -severity $2  -silent| anew $3 |notify -silent
 		rm -rf $file
 	done
 }
