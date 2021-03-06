@@ -1,5 +1,15 @@
 #!/bin/bash
 
+
+
+path=$PWD
+urls=""
+severity="critical,high,medium,low"
+templates=""
+output="nuclie_split"
+line_nbr=500
+occurence=100 
+
 function prepare_template(){
 	cd $path
 	echo "step prepare template"
@@ -65,13 +75,7 @@ function all(){
 }
 
 
-path=$PWD
-urls=""
-severity="critical,high,medium,low"
-templates=""
-output="nuclie_split"
-line_nbr=500
-occurence=100
+
 
 while getopts ":l:s:o:t:n:c:a" OPTION
 	do
