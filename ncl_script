@@ -46,6 +46,25 @@ function help(){
 	echo -e "\t n \t nbr of split line (default 500)"
 }
 
+
+function all(){
+	#nuclei template 
+	nuclei -update-templates
+	prepare_template "~/nuclei-templates"
+	split_host Hosts  400
+	scan 500  "critical,high,medium,low"  "out_nuclei"
+	update_template_file
+	
+	# pikpiktemplates 
+	cd ~/tools/pikpik && git pull && cd -
+	prepare_template "~/tools/pikpik/nuclei"
+	split_host Hosts  400
+	scan 500  "critical,high,medium,low"  "out_nuclei"
+	update_template_file
+
+}
+
+
 path=$PWD
 urls=""
 severity="critical,high,medium,low"
@@ -54,11 +73,15 @@ output="nuclie_split"
 line_nbr=500
 occurence=100
 
-while getopts ":l:s:o:t:n:c:" OPTION
+while getopts ":l:s:o:t:n:c:a" OPTION
 	do
 		case $OPTION in
 			l)
 					urls="$OPTARG" 
+					;;
+			a)
+					all ;
+					exit 
 					;;
 			s)
 					severity="$OPTARG"
