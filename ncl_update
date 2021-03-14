@@ -79,7 +79,6 @@ function update_global(){
 		cd ..
 		pwd 
 		split_host Hosts  100
-		exit
 		scan 500 "critical,high,medium,low" "update_all.txt"
 		update_template_file
 		echo "scan $prog done "| notify -silent
