@@ -73,7 +73,7 @@ function all(){
 }
 
 function update_global(){
-	for prog in $():
+	for prog in $(find ./ -maxdepth 1 -type d | grep -wv "./");do
 		cd $prog
 		prepare_template "~/tools/pikpik/nuclei/ "
 		split_host "Hosts"  "100"
