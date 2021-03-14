@@ -21,7 +21,7 @@ function prepare_template(){
 }
 
 function split_host(){
-	cd $path
+	# cd $path
 	if [[ ! $(find ./ -iname "host_*") ]]; then
 		split -l $2 $1  host_
 	fi
