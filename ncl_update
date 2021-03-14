@@ -13,10 +13,10 @@ function prepare_template(){
 	rm -rf ./ncl_temp 2&> /dev/null
 	cp -r $1 ./ncl_temp
 	cd  ./ncl_temp
-	if [[ -f ./.templates ]]; then
+	if [[ -f ../.templates ]]; then
 		for i in $(cat ../.templates);do
-			find ./ -iname "$i" -exec rm -rf {} \;
-			rm $i
+			find ./ -iname "$i" #-exec rm -rf {} \;
+			# rm $i
 		done
 	fi
 }
