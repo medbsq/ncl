@@ -14,7 +14,6 @@ function prepare_template(){
 	rm -rf ./ncl_temp 2&> /dev/null
 	cp -r $1 ./ncl_temp
 	cd  ./ncl_temp
-
 	if [[ -f ./.templates ]]; then
 		for i in $(cat ../.templates);do
 			find ./ -iname "$i" -exec rm -rf {} \;
@@ -73,9 +72,23 @@ function all(){
 
 }
 
+function update_global(){
+	for prog in $():
+		cd $prog
+		prepare_template "~/tools/pikpik/nuclei/ "
+		split_host "Hosts"  "100"
+		# scan "500" "critical,high,medium,low" "update_all.txt"
+		# update_template_file
+		# echo "scan done "| notify -silent
 
+		# prepare_template "~/nuclei-templates/"
+		# split_host "Hosts"  "100"
+		# scan "500" "critical,high,medium,low" "update_all.txt"
+		# update_template_file
+		# echo "scan done "| notify -silent
+	done
 
-
+}
 while getopts ":l:s:o:t:n:c:a" OPTION
 	do
 		case $OPTION in
