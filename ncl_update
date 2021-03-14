@@ -9,7 +9,6 @@ line_nbr=500
 occurence=100 
 
 function prepare_template(){
-	cd $path
 	echo "step prepare template"
 	rm -rf ./ncl_temp 2&> /dev/null
 	cp -r $1 ./ncl_temp
@@ -74,7 +73,7 @@ function all(){
 
 function update_global(){
 	for prog in $(find ./ -maxdepth 1 -type d | grep -wv "./");do
-		path=$prog
+		cd $prog
 		prepare_template ~/tools/pikpik/nuclei/ 
 		split_host Hosts  100
 		exit
