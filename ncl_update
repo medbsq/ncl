@@ -77,6 +77,7 @@ function update_global(){
 		cd $prog
 		prepare_template "~/tools/pikpik/nuclei/ "
 		split_host "Hosts"  "100"
+		exit
 		# scan "500" "critical,high,medium,low" "update_all.txt"
 		# update_template_file
 		# echo "scan done "| notify -silent
