@@ -16,6 +16,7 @@ function prepare_template(){
 	if [[ -f ./.templates ]]; then
 		for i in $(cat ../.templates);do
 			find ./ -iname "$i" -exec rm -rf {} \;
+			rm $i
 		done
 	fi
 }
@@ -74,20 +75,21 @@ function all(){
 function update_global(){
 	for prog in $(find ./ -maxdepth 1 -type d | grep -wv "./");do
 		cd $prog
-		pwd
+	
 		prepare_template ~/tools/pikpik/nuclei/ 
-		cd ..
-		pwd 
-		split_host Hosts  100
-		scan 500 "critical,high,medium,low" "update_all.txt"
-		update_template_file
-		echo "scan $prog done "| notify -silent
-
-		# prepare_template "~/nuclei-templates/"
-		# split_host "Hosts"  "100"
-		# scan "500" "critical,high,medium,low" "update_all.txt"
+		# cd .. 
+		# split_host Hosts  400
+		# scan 800 "critical,high,medium,low" "update_all.txt"
 		# update_template_file
-		# echo "scan done "| notify -silent
+		# # echo "scan $prog done "| notify -silent
+
+		# prepare_template ~/nuclei-templates/
+		# cd ..
+		# split_host Hosts  400
+		# scan 800 "critical,high,medium,low" "update_all.txt"
+		# update_template_file
+		# echo "scan $prog done "| notify -silent
+
 	done
 
 }
