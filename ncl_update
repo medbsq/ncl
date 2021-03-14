@@ -15,9 +15,8 @@ function prepare_template(){
 	cd  ./ncl_temp
 	if [[ -f ../.templates ]]; then
 		for i in $(cat ../.templates);do
-			find ./ -iname "$i" #-exec rm -rf {} \;
-			# rm $i
-		done
+			find ./ -iname "$i" exec rm -rf {} \;
+					done
 	fi
 }
 
