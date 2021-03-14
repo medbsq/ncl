@@ -90,11 +90,14 @@ function update_global(){
 	done
 
 }
-while getopts ":l:s:o:t:n:c:a" OPTION
+while getopts ":l:s:o:t:n:c:a:u" OPTION
 	do
 		case $OPTION in
 			l)
 					urls="$OPTARG" 
+					;;
+			u)
+					update_global 
 					;;
 			a)
 					all ;
