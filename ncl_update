@@ -77,7 +77,9 @@ function update_global(){
 		cd $prog
 	
 		prepare_template ~/tools/pikpik/nuclei/ 
-		# cd .. 
+		exit
+		# cd ../
+
 		# split_host Hosts  400
 		# scan 800 "critical,high,medium,low" "update_all.txt"
 		# update_template_file
