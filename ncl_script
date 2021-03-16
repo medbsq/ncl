@@ -32,7 +32,7 @@ function split_host(){
 function scan(){
 	cd $path 
 	for file in $(ls host_* );do
-		nuclei -l $file  -t ./ncl_temp -c $1   -stats -timeout 5  -severity $2  -silent| anew $3 |notify -silent
+		nuclei -l $file  -t ./ncl_temp -c $1   -stats -timeout 5  -severity $2   -retries 0 -silent| anew $3 |notify -silent
 		rm -rf $file
 	done
 }
@@ -61,7 +61,7 @@ function all(){
 	nuclei -update-templates
 	prepare_template ~/nuclei-templates
 	split_host Hosts  400
-	scan 500  critical,high,medium,low  out_nuclei
+	scan 1000  critical,high,medium,low  out_nuclei
 	update_template_file
 	
 	# pikpiktemplates 
@@ -72,8 +72,6 @@ function all(){
 	update_template_file
 
 }
-
-
 
 
 while getopts ":l:s:o:t:n:c:a" OPTION
