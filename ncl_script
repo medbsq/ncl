@@ -39,7 +39,7 @@ function scan(){
 	# cd $path 
 	for file in $(ls host_* );do
 		echo "start scan for $file $1 $2"
-		#nuclei -l $file  -t ./ncl_temp -c $1   -stats -timeout 5  -severity $2   -retries 0 -silent| anew $3 |notify -silent
+		nuclei -l $file  -t ./ncl_temp -c $1   -stats -timeout 5  -severity $2   -retries 0 -silent| anew $3 |notify -silent
 		rm -rf $file
 	done
 }
@@ -75,7 +75,7 @@ function all(){
 	cd ~/tools/pikpik && git pull && cd -
 	prepare_template ~/tools/pikpik/nuclei
 	split_host Hosts  400
-	scan 500  critical,high,medium,low  out_nuclei
+	scan 1000 critical,high,medium,low  out_nuclei
 	update_template_file
 }
 
