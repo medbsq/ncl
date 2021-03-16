@@ -125,6 +125,7 @@ while getopts ":l:s:o:t:n:c:a" OPTION
 
 if [[ $templates == "" || $urls == "" ]];then
 	echo "the template directory and the urls list are required !!!"
+	help 
 	exit ;
 else 
 	# echo " $templates  $urls  $line_nbr  $occurence $severity $output "
@@ -132,7 +133,7 @@ else
 	split_host $urls  $line_nbr
 	scan $occurence $severity $output
 	update_template_file
-	# echo "scan done "| notify -silent
+	echo "scan done "| notify -silent
 fi
 
 
