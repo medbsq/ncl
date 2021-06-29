@@ -1,18 +1,30 @@
 #!/bin/bash
 
+config_file=""
+template=()
+threads="200"
 file="$1"
 ouput="nuclei_output.txt"
 output_domains="new_domain.txt"
 
 
+function configuration {
+    #template
+    for i in $(cat config_file |grep "templates=" |cut -d "=" -f2 |cut -d "," -f 1-);do 
+        templates+=("$")
+    done
+     
+}
+
 function prepare_template {
     echo "step prepare templates ?"
     rm -rf ./ncl_temp 2&> /dev/null
     mkdir ./ncl_temp
-    cp -r ~/nuclei-templates/ ./ncl_temp
-    cp -r ~/ncl/templates ./ncl_temp
-    cp -r ~/tools/pikpik/nuclei/ ./ncl_temp
+    for i in $(echo ${templates[*]} | xargs -n 1 );do
+            cp -r i ./ncl_temp
+    done
     cd  ./ncl_temp
+    # if you need too eliminate a template  just aad the in the .templates files
     if [[ -f ../.templates ]]; then
         for i in $(cat ../.templates);do
             find ./ -iname "$i" -exec rm -rf {} \;
@@ -25,16 +37,19 @@ function prepare_template {
 
 function update_templates {
     echo " update template"
-    nuclei -update-templates -silent
-    # cd ~/tools/pikpik/nuclei/ && git pull && cd -
-    cd ~/ncl && git pull && cd -
+    for i in $(echo ${templates[*]} | xargs -n 1 );do
+        if [[ $i -eq ~/nuclei-templates ]];then
+            nuclei -update-templates -silent
+        else
+            cd $i && git pull && cd -
+        fi
 
 
 }
 
 function scan {
     echo "scan "
-    cat Hosts |nuclei  -t ./ncl_temp -c 500    -stats -timeout 5  -severity critical,high,medium,low | anew $ouput |notify -silent
+    cat $1 |nuclei  -t ./ncl_temp -c 500    -stats -timeout 5  -severity critical,high,medium,low | anew $ouput |notify -silent
 }
 
 function update_log {
@@ -74,28 +89,60 @@ function crl() {
 }
 
 function new_assets {
-        echo "search for new asset"
+        echo "search for new asset "
         for domain in $(cat ./scope);do
                 crl $domain
                 echo "$domain" |subfinder |tee -a $output_domains
                 git_domains -d $domains -t $github_api |tee -a $output_domains
         done
         cat Hosts > a 
-        cat $output_domains | httpx -threads 200  -timeout 5 -silent | anew a | tee -a daily_hosts.txt
-        cat daily_hosts.txt | grep -f scope | sort -uo daily_hosts.txt
-        cat daily_hosts.txt >> new_Hosts
+        cat $output_domains | httpx -threads 200  -timeout 5 -silent |anew a |tee -a daily_hosts.txt
+        cat dialy_hosts.txt |grep -f scope |sort -uo dialy_hosts.txt
+        cat dialy_hosts.txt >> new_Hosts
         rm a 
         
+
 }
 
 function scan_new_assets {
     echo "scan new asset"
-    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity critical | anew new_host_output.txt |notify -silent
-    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity high | anew new_host_output.txt |notify -silent
-    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity medium | anew new_host_output.txt |notify -silent
+    for i in $(echo ${templates[*]} | xargs -n 1 );do
+        cat daily_hosts.txt  | nuclei  -t $i  -c $threads  -stats -timeout 5  -severity critical,high,medium.low | anew new_host_output.txt |notify -silent
+    done
     cat daily_hosts.txt  | anew  Hosts
-    rm daily_hosts.txt
+    rm dialy_hosts.txt
+
 }
+
+
+
+while getopts ":l:s:o:t:n:c:a" OPTION
+	do
+		case $OPTION in
+			f)
+					file="$OPTARG" 
+					;;
+            c)
+					config_file="$OPTARG" 
+					;;
+			
+            t)
+					threads="$OPTARG" 
+					;;
+			
+            :)
+					help
+					exit 1
+					;;
+			\?)
+					help
+					exit 1
+					;;
+
+		esac
+	done
+
+
 
 
 update_templates
