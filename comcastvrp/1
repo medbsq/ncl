@@ -11,7 +11,7 @@ function prepare_template {
     mkdir ./ncl_temp
     cp -r ~/nuclei-templates/ ./ncl_temp
     cp -r ~/ncl/templates ./ncl_temp
-    cp -r ~/tools/pikpik/nuclei/ ./ncl_temp
+    cp -r ~/tools/pikpik/nuclei/nuclei/ ./ncl_temp
     cd  ./ncl_temp
     if [[ -f ../.templates ]]; then
         for i in $(cat ../.templates);do
@@ -25,7 +25,7 @@ function prepare_template {
 
 function update_templates {
     echo " update template"
-    nuclei -update-templates -silent
+    nuclei -update-templates
     cd ~/tools/pikpik/nuclei/ && git pull
     cd ~/ncl && git pull
 
@@ -33,7 +33,7 @@ function update_templates {
 
 function scan {
     echo "scan "
-    cat Hosts |nuclei  -t ./ncl_temp -c 500    -stats -timeout 5  -severity critical,high,medium,low | anew $ouput |notify -silent
+    cat Hosts |nuclei  -t ./ncl_temp -c 500   -stats -timeout 5  -severity critical,high,medium,low | anew $ouput |notify -silent
 }
 
 function update_log {
@@ -90,9 +90,9 @@ function new_assets {
 
 function scan_new_assets {
     echo "scan new asset"
-    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity critical | anew new_host_output.txt |notify -silent
-    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity high | anew new_host_output.txt |notify -silent
-    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity medium | anew new_host_output.txt |notify -silent
+    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/nuclei/ -c 500   -stats -timeout 5  -severity critical | anew new_host_output.txt |notify -silent
+    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/nuclei/ -c 500   -stats -timeout 5  -severity high | anew new_host_output.txt |notify -silent
+    cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/nuclei/ -c 500   -stats -timeout 5  -severity medium | anew new_host_output.txt |notify -silent
     cat daily_hosts.txt  | anew  Hosts
     rm dialy_hosts.txt
 }
