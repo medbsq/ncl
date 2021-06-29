@@ -11,7 +11,7 @@ function prepare_template {
     mkdir ./ncl_temp
     cp -r ~/nuclei-templates/ ./ncl_temp
     cp -r ~/ncl/templates ./ncl_temp
-    cp -r ~/tools/pikpik/nuclei/nuclei/ ./ncl_temp
+    cp -r ~/tools/pikpik/nuclei/ ./ncl_temp
     cd  ./ncl_temp
     if [[ -f ../.templates ]]; then
         for i in $(cat ../.templates);do
@@ -33,7 +33,7 @@ function update_templates {
 
 function scan {
     echo "scan "
-    cat Hosts |nuclei  -t ./ncl_temp -c 500   -stats -timeout 5  -severity critical,high,medium,low | anew $ouput |notify -silent
+    cat Hosts |nuclei  -t ./ncl_temp -c 500    -stats -timeout 5  -severity critical,high,medium,low | anew $ouput |notify -silent
 }
 
 function update_log {
