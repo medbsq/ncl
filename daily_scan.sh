@@ -26,8 +26,9 @@ function prepare_template {
 function update_templates {
     echo " update template"
     nuclei -update-templates -silent
-    cd ~/tools/pikpik/nuclei/ && git pull
-    cd ~/ncl && git pull
+    # cd ~/tools/pikpik/nuclei/ && git pull && cd -
+    cd ~/ncl && git pull && cd -
+
 
 }
 
@@ -99,8 +100,10 @@ function scan_new_assets {
 
 
 update_templates
+pwd
 prepare_template 
-scan 
+pwd
+scan 2&> /dev/null
 update_log
 new_assets 
 scan_new_assets
