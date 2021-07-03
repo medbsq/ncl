@@ -4,7 +4,6 @@ file="$1"
 ouput="nuclei_output.txt"
 output_domains="new_domain.txt"
 
-
 function prepare_template {
     echo "step prepare templates ?"
     rm -rf ./ncl_temp 2&> /dev/null
@@ -26,7 +25,7 @@ function prepare_template {
 function update_templates {
     echo " update template"
     nuclei -update-templates -silent
-    # cd ~/tools/pikpik/nuclei/ && git pull && cd -
+    cd ~/tools/pikpik/nuclei/ && git pull && cd -
     cd ~/ncl && git pull && cd -
 
 
@@ -94,7 +93,7 @@ function scan_new_assets {
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity high | anew new_host_output.txt |notify -silent
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity medium | anew new_host_output.txt |notify -silent
     cat daily_hosts.txt  | anew  Hosts
-    rm daily_hosts.txt
+    rm  daily_hosts.txt
 }
 
 
@@ -102,7 +101,7 @@ update_templates
 pwd
 prepare_template 
 pwd
-scan 2&> /dev/null
+scan 
 update_log
 new_assets 
 scan_new_assets
