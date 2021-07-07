@@ -1,8 +1,23 @@
 #!/bin/bash
 
+mkdir -p output
+time=$(date +"%m_%d_%Y")
 file="$1"
 ouput="nuclei_output.txt"
 output_domains="new_domain.txt"
+
+function output {
+    cat new_Hosts >> ./output/Hosts_$time
+    cat new_host_output >> ./output/nuclei_$time  
+    cat nuclei_output.txt >> ./output/nuclei_$time
+    if [ "$time" = "$(date +"%m_%d_%Y")" ];then
+        rm new_host_output nuclei_output.txt new_Hosts
+        time=$(date +"%m_%d_%Y")
+    fi
+    
+
+}
+
 
 function prepare_template {
     echo "step prepare templates ?"
@@ -11,6 +26,7 @@ function prepare_template {
     cp -r ~/nuclei-templates/ ./ncl_temp
     cp -r ~/ncl/templates ./ncl_temp
     cp -r ~/tools/pikpik/nuclei/ ./ncl_temp
+    # cp -r ~/my-templates ./ncl_temp
     cd  ./ncl_temp
     if [[ -f ../.templates ]]; then
         for i in $(cat ../.templates);do
@@ -82,6 +98,7 @@ function new_assets {
         cat Hosts > a 
         cat $output_domains | httpx -threads 200  -timeout 5 -silent | anew a | tee -a daily_hosts.txt
         cat daily_hosts.txt | grep -f scope | sort -uo daily_hosts.txt
+        #the daily hosts is unitul
         cat daily_hosts.txt >> new_Hosts
         rm a 
         
@@ -89,6 +106,7 @@ function new_assets {
 
 function scan_new_assets {
     echo "scan new asset"
+    #addmy templates ~/my-templates
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity critical | anew new_host_output.txt |notify -silent
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity high | anew new_host_output.txt |notify -silent
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity medium | anew new_host_output.txt |notify -silent
@@ -96,12 +114,16 @@ function scan_new_assets {
     rm  daily_hosts.txt
 }
 
+mkdir -p output
+while true ;do
+    echo "scan for $time "
+    update_templates
+    prepare_template 
+    scan 
+    update_log
 
-update_templates
-pwd
-prepare_template 
-pwd
-scan 
-update_log
-new_assets 
-scan_new_assets
+    new_assets 
+    scan_new_assets
+
+    output 
+done
