@@ -11,7 +11,7 @@ function output {
     cat new_host_output.txt >> ./output/nuclei_$time  
     cat nuclei_output.txt >> ./output/nuclei_$time
     if [ "$time" = "$(date +"%m_%d_%Y")" ];then
-        rm new_host_output nuclei_output.txt new_Hosts
+        rm new_host_output.txt nuclei_output.txt new_Hosts
         time=$(date +"%m_%d_%Y")
     fi
     
