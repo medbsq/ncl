@@ -8,7 +8,7 @@ output_domains="new_domain.txt"
 
 function output {
     cat new_Hosts >> ./output/Hosts_$time
-    cat new_host_output >> ./output/nuclei_$time  
+    cat new_host_output.txt >> ./output/nuclei_$time  
     cat nuclei_output.txt >> ./output/nuclei_$time
     if [ "$time" = "$(date +"%m_%d_%Y")" ];then
         rm new_host_output nuclei_output.txt new_Hosts
@@ -106,7 +106,7 @@ function new_assets {
 
 function scan_new_assets {
     echo "scan new asset"
-    #addmy templates ~/my-templates
+    #add    my templates ~/my-templates
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity critical | anew new_host_output.txt |notify -silent
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity high | anew new_host_output.txt |notify -silent
     cat daily_hosts.txt  | nuclei  -t ~/nuclei-templates/ -t ~/ncl/templates -t ~/tools/pikpik/nuclei/ -c 500   -stats -timeout 5  -severity medium | anew new_host_output.txt |notify -silent
@@ -121,7 +121,6 @@ while true ;do
     prepare_template 
     scan 
     update_log
-
     new_assets 
     scan_new_assets
 

@@ -99,6 +99,10 @@ function scan_new_assets {
 }
 
 
+function help {
+    echo "usage:"
+    echo "dailyscan.sh -f Hosts -t threads"
+}
 
 while getopts ":f:c:" OPTION
 	do
@@ -106,12 +110,9 @@ while getopts ":f:c:" OPTION
 			f)
 					file="$OPTARG" 
 					;;
-            
             t)
 					threads="$OPTARG" 
 					;;
- 
-			
             :)
 					help
 					exit 1
@@ -120,21 +121,25 @@ while getopts ":f:c:" OPTION
 					help
 					exit 1
 					;;
-
 		esac
-	done
+done
 
 
+if [[ $file != "" ]];then
+    mkdir -p output
+    while true ;do
+        echo "scan for $time"
+        update_templates
+        prepare_template 
+        scan 
+        update_log
+        if [[ -f ./scope ]];then 
+            new_assets 
+            scan_new_assets
+        fi
+        output 
+    done
 
-fi [[ $file != "" ]];then
-    update_templates 
-    prepare_template 
-    scan 
-    update_log
-    if [[ -f ./scope ]];then 
-        new_assets 
-        scan_new_assets
-    fi
 else
     echo "file required !!!"
 fi
